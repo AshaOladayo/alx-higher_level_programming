@@ -1,24 +1,57 @@
 #!/usr/bin/python3
-"""
-    This module contains a function that inserts a line of text into a file
-    after each line containing a specific string
-"""
+""" Module to print status code """
+import sys
 
 
-def append_after(filename="", search_string="", new_string=""):
-    """
-    Inserts a line of new string after the line containing search string
-    """
+class Magic:
+    """ Class to generates instances with dict and size"""
+    def __init__(self):
+        """ Init method """
+        self.dic = {}
+        self.size = 0
 
-    with open(filename, "r", encoding="UTF-8") as f:
-        lines = f.readlines()
+    def init_dic(self):
+        """ Initialize dict """
+        self.dic['200'] = 0
+        self.dic['301'] = 0
+        self.dic['400'] = 0
+        self.dic['401'] = 0
+        self.dic['403'] = 0
+        self.dic['404'] = 0
+        self.dic['405'] = 0
+        self.dic['500'] = 0
 
-    new_lines = []
-    for line in lines:
-        new_lines.append(line)
+    def add_status_code(self, status):
+        """ add repeated number to the status code """
+        if status in self.dic:
+            self.dic[status] += 1
 
-        if line.find(search_string) != -1:
-            new_lines.append(new_string)
+    def print_info(self, sig=0, frame=0):
+        """ print status code """
+        print("File size: {:d}".format(self.size))
+        for key in sorted(self.dic.keys()):
+            if self.dic[key] != 0:
+                print("{}: {:d}".format(key, self.dic[key]))
 
-    with open(filename, "w", encoding="UTF-8") as f:
-        f.writelines(new_lines)
+
+if __name__ == "__main__":
+    magic = Magic()
+    magic.init_dic()
+    nlines = 0
+
+    try:
+        for line in sys.stdin:
+            if nlines % 10 == 0 and nlines != 0:
+                magic.print_info()
+
+            try:
+                list_line = [x for x in line.split(" ") if x.strip()]
+                magic.add_status_code(list_line[-2])
+                magic.size += int(list_line[-1].strip("\n"))
+            except Exception:
+                pass
+            nlines += 1
+    except KeyboardInterrupt:
+        magic.print_info()
+        raise
+    magic.print_info()

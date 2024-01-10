@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """
-    This module contains a function that appends a string to a text file
-    and return the number of characters written
+    This module contains a function that returns the JSON representation of
+    an object string
 """
 
 
-def append_write(filename="", text=""):
-    """ Appends the characters in text to filename """
+def to_json_string(my_obj):
+    """ Returns the json representation of my_obj """
 
-    with open(filename, "a", encoding="UTF-8") as f:
-        return (f.write(text))
+    import json
+
+    return (json.dumps(my_obj))
